@@ -1,9 +1,10 @@
 /* eslint-disable react/no-danger */
-import { AppPropsType, AppType } from 'next/dist/shared/lib/utils'
+import { AppPropsType, AppType, DocumentInitialProps } from 'next/dist/shared/lib/utils'
 import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 
 import { cspWithoutFrameAncestors } from '@app/utils/createCsp'
+import { OG_IMAGE_URL } from '@app/utils/constants'
 
 const ipfsPathScript = `
   (function () {
@@ -74,7 +75,26 @@ const makeIPFSURL = (url: string) => {
   return url
 }
 
-export default class MyDocument extends Document {
+const frameMetadata = JSON.stringify({
+  version: "next",
+  imageUrl: `${OG_IMAGE_URL}/address/0x653Ff253b0c7C1cc52f484e891b71f9f1F010Bfb`,
+  button: {
+    title: "ENS Frame",
+    action: {
+      type: 'launch_frame',
+      name: 'ENS Frame',
+      url: `${process.env.NEXT_PUBLIC_APP_URL}`,
+      splashImageUrl: `${process.env.NEXT_PUBLIC_APP_URL}/apple-touch-icon.png`,
+      splashBackgroundColor: '#fafafa',
+    }
+  }
+});
+
+interface CustomDocumentProps extends DocumentInitialProps {
+  frameMetadata?: string;
+}
+
+export default class MyDocument extends Document<CustomDocumentProps> {
   static async getInitialProps(ctx: DocumentContext) {
     const sheet = new ServerStyleSheet()
     const originalRenderPage = ctx.renderPage
@@ -90,8 +110,10 @@ export default class MyDocument extends Document {
         })
 
       const initialProps = await Document.getInitialProps(ctx)
+
       return {
         ...initialProps,
+        frameMetadata,
         styles: (
           <>
             {initialProps.styles}
@@ -105,11 +127,16 @@ export default class MyDocument extends Document {
   }
 
   render() {
+    const { frameMetadata } = this.props;
+    
     return (
       <Html data-theme="light">
         <Head>
           <title>Farcaster Frames v2 Demo</title>
           <meta name="description" content="A Farcaster Frames v2 demo app" />
+          {frameMetadata && (
+            <meta name="fc:frame" content={frameMetadata} />
+          )}
           {process.env.NODE_ENV === 'production' && (
             <meta httpEquiv="Content-Security-Policy" content={cspWithoutFrameAncestors} />
           )}
