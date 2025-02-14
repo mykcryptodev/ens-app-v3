@@ -97,12 +97,22 @@ export const Basic = withErrorBoundary(({ children }: { children: React.ReactNod
   }, [])
 
   useEffect(() => {
-    if (
-      shouldSwitchChain({ isConnected, hasProgrammaticChainSwitching, isPending, isError, chainId })
-    ) {
-      switchChain({ chainId: 1 })
-    }
-  }, [isConnected, hasProgrammaticChainSwitching, isPending, isError, chainId, switchChain])
+    console.log('isConnected', isConnected)
+    switchChain({ chainId: 1 })
+    console.log('switched chain to 1');
+  }, [isConnected])
+
+  useEffect(() => {
+    console.log('i am on chainId', chainId)
+  }, [chainId])
+
+  // useEffect(() => {
+  //   if (
+  //     shouldSwitchChain({ isConnected, hasProgrammaticChainSwitching, isPending, isError, chainId })
+  //   ) {
+  //     switchChain({ chainId: 1 })
+  //   }
+  // }, [isConnected, hasProgrammaticChainSwitching, isPending, isError, chainId, switchChain])
 
   // useEffect(() => {
   //   shouldRedirect(router, 'Basic.tsx', '/unsupportedNetwork', { isConnected, chainId })
