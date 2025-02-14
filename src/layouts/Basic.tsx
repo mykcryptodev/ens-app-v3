@@ -10,6 +10,7 @@ import { getSupportedChainById } from '@app/constants/chains'
 import { useRouterWithHistory } from '@app/hooks/useRouterWithHistory'
 import { IS_DEV_ENVIRONMENT } from '@app/utils/constants'
 import { shouldRedirect } from '@app/utils/shouldRedirect'
+import { Button } from '@ensdomains/thorin'
 
 import { Navigation } from './Navigation'
 
@@ -112,6 +113,9 @@ export const Basic = withErrorBoundary(({ children }: { children: React.ReactNod
     <Container className="min-safe">
       <Navigation />
       <ContentWrapper>
+        <Button onClick={() => switchChain({ chainId: 1 })} disabled={isPending}>
+          Switch to Mainnet
+        </Button>
         {error ? <ErrorScreen errorType="application-error" /> : children}
       </ContentWrapper>
       <BottomPlaceholder />
