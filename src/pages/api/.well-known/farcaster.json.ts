@@ -23,7 +23,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       homeUrl: appUrl,
       imageUrl: `${OG_IMAGE_URL}/address/0x653Ff253b0c7C1cc52f484e891b71f9f1F010Bfb`,
       buttonTitle: "Launch ENS",
-      splashImageUrl: `${appUrl}/splash.png`,
+      splashImageUrl: `${appUrl}/apple-touch-icon.png`,
       splashBackgroundColor: "#f7f7f7",
       webhookUrl: `${appUrl}/api/webhook`,
     },
