@@ -1,6 +1,11 @@
 import { OG_IMAGE_URL } from "../../../utils/constants";
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export async function GET() {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
   const appUrl = process.env.NEXT_PUBLIC_URL;
 
   const config = {
@@ -24,5 +29,5 @@ export async function GET() {
     },
   };
 
-  return Response.json(config);
-}
+  return res.status(200).json(config);
+} 
