@@ -1,3 +1,4 @@
+'use client'
 import { createClient, type FallbackTransport, type HttpTransport, type Transport } from 'viem'
 import { createConfig, createStorage, fallback, http } from 'wagmi'
 import { holesky, localhost, mainnet, sepolia } from 'wagmi/chains'
@@ -11,16 +12,11 @@ import {
   sepoliaWithEns,
 } from '@app/constants/chains'
 
-let farcasterConnector: any = null
-if (typeof window !== 'undefined') {
-  import('@farcaster/frame-wagmi-connector').then(mod => {
-    farcasterConnector = mod.farcasterFrame()
-  })
-}
+const farcasterFrame = typeof window !== 'undefined' ? (await import('@farcaster/frame-wagmi-connector')).farcasterFrame : undefined;
 
 const isLocalProvider = !!process.env.NEXT_PUBLIC_PROVIDER
 
-const connectors = farcasterConnector ? [farcasterConnector] : []
+const connectors = farcasterFrame ? [farcasterFrame()] : []
 
 const infuraKey = process.env.NEXT_PUBLIC_INFURA_KEY || 'cfa6ae2501cc4354a74e20432507317c'
 const tenderlyKey = process.env.NEXT_PUBLIC_TENDERLY_KEY || '4imxc4hQfRjxrVB2kWKvTo'
