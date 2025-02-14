@@ -12,7 +12,7 @@ import {
   sepoliaWithEns,
 } from '@app/constants/chains'
 
-const farcasterFrame = typeof window !== 'undefined' ? (await import('@farcaster/frame-wagmi-connector')).farcasterFrame : undefined;
+const farcasterFrame = typeof window !== 'undefined' ? (await import('../frameconnector')).frameConnector : undefined;
 
 const isLocalProvider = !!process.env.NEXT_PUBLIC_PROVIDER
 
