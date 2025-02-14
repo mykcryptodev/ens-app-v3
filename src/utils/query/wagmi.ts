@@ -11,15 +11,16 @@ import {
   sepoliaWithEns,
 } from '@app/constants/chains'
 
-import { WC_PROJECT_ID } from '../constants'
-import { getDefaultWallets } from '../getDefaultWallets'
+let farcasterConnector: any = null
+if (typeof window !== 'undefined') {
+  import('@farcaster/frame-wagmi-connector').then(mod => {
+    farcasterConnector = mod.farcasterFrame()
+  })
+}
 
 const isLocalProvider = !!process.env.NEXT_PUBLIC_PROVIDER
 
-const connectors = getDefaultWallets({
-  appName: 'ENS',
-  projectId: WC_PROJECT_ID,
-})
+const connectors = farcasterConnector ? [farcasterConnector] : []
 
 const infuraKey = process.env.NEXT_PUBLIC_INFURA_KEY || 'cfa6ae2501cc4354a74e20432507317c'
 const tenderlyKey = process.env.NEXT_PUBLIC_TENDERLY_KEY || '4imxc4hQfRjxrVB2kWKvTo'
@@ -106,7 +107,7 @@ const transports = {
 
 const wagmiConfig_ = createConfig({
   connectors,
-  ssr: true,
+  ssr: false,
   multiInjectedProviderDiscovery: true,
   storage: createStorage({ storage: localStorageWithInvertMiddleware(), key: prefix }),
   chains,
