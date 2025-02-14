@@ -3,6 +3,7 @@ import { useErrorBoundary, withErrorBoundary } from 'react-use-error-boundary'
 import { useIntercom } from 'react-use-intercom'
 import styled, { css } from 'styled-components'
 import { useAccount, useSwitchChain } from 'wagmi'
+import dynamic from 'next/dynamic'
 
 import ErrorScreen from '@app/components/@atoms/ErrorScreen'
 import { getSupportedChainById } from '@app/constants/chains'
@@ -11,6 +12,8 @@ import { IS_DEV_ENVIRONMENT } from '@app/utils/constants'
 import { shouldRedirect } from '@app/utils/shouldRedirect'
 
 import { Navigation } from './Navigation'
+
+const Frame = dynamic(() => import('@app/components/Frame'), { ssr: false })
 
 const Container = styled.div(
   ({ theme }) => css`
@@ -112,6 +115,7 @@ export const Basic = withErrorBoundary(({ children }: { children: React.ReactNod
         {error ? <ErrorScreen errorType="application-error" /> : children}
       </ContentWrapper>
       <BottomPlaceholder />
+      <Frame />
     </Container>
   )
 })

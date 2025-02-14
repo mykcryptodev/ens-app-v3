@@ -108,6 +108,8 @@ export default class MyDocument extends Document {
     return (
       <Html data-theme="light">
         <Head>
+          <title>Farcaster Frames v2 Demo</title>
+          <meta name="description" content="A Farcaster Frames v2 demo app" />
           {process.env.NODE_ENV === 'production' && (
             <meta httpEquiv="Content-Security-Policy" content={cspWithoutFrameAncestors} />
           )}
