@@ -14,26 +14,77 @@ export function frameConnector() {
     type: frameConnector.type,
 
     async setup() {
-      await this.connect({ chainId: config.chains[0].id });
+      await this.connect({ chainId: mainnet.id });
     },
     async connect({ chainId } = {}) {
-      const provider = await this.getProvider();
-      const accounts = await provider.request({
-        method: "eth_requestAccounts",
-      });
+      try {
+        const provider = await this.getProvider();
+        
+        if (!provider) {
+          throw new Error('Frame provider not available. Make sure you are in a Frame environment.');
+        }
 
-      let currentChainId = await this.getChainId();
-      if (chainId && currentChainId !== chainId) {
-        const chain = await this.switchChain!({ chainId });
-        currentChainId = chain.id;
+        console.log('Frame provider state:', {
+          hasProvider: !!provider,
+          hasRequest: typeof provider.request === 'function',
+          provider: provider
+        });
+
+        let accounts;
+        try {
+          if (typeof provider.request !== 'function') {
+            throw new Error('Provider request method is not a function');
+          }
+
+          accounts = await provider.request({
+            method: "eth_requestAccounts",
+          });
+
+          console.log('Accounts response:', accounts);
+        } catch (error) {
+          console.error('RPC request failed:', {
+            error,
+            errorType: typeof error,
+            errorKeys: error ? Object.keys(error) : [],
+            errorString: String(error)
+          });
+
+          // Handle different types of errors
+          if (error instanceof Error) {
+            throw error;
+          } else if (typeof error === 'string') {
+            throw new Error(error);
+          } else if (error && typeof error === 'object') {
+            throw new Error((error as { message?: string })?.message || 'Unknown RPC error');
+          } else {
+            throw new Error('Failed to request accounts: Unknown error type');
+          }
+        }
+
+        if (!accounts || accounts.length === 0) {
+          throw new Error('No accounts returned from provider');
+        }
+
+        let currentChainId = await this.getChainId();
+        if (chainId && currentChainId !== chainId) {
+          const chain = await this.switchChain!({ chainId });
+          currentChainId = chain.id;
+        }
+
+        connected = true;
+
+        return {
+          accounts: accounts.map((x) => getAddress(x)),
+          chainId: currentChainId,
+        };
+      } catch (error) {
+        console.error('Frame connection error:', {
+          error,
+          errorType: typeof error,
+          errorMessage: error instanceof Error ? error.message : String(error)
+        });
+        throw error;
       }
-
-      connected = true;
-
-      return {
-        accounts: accounts?.map((x) => getAddress(x)),
-        chainId: currentChainId,
-      };
     },
     async disconnect() {
       connected = false;
@@ -88,6 +139,14 @@ export function frameConnector() {
       connected = false;
     },
     async getProvider() {
+      if (typeof window === 'undefined') {
+        throw new Error('Frame provider is only available in browser environment');
+      }
+      
+      if (!sdk.wallet?.ethProvider) {
+        throw new Error('Frame ethProvider not available');
+      }
+      
       return sdk.wallet.ethProvider;
     },
   }));

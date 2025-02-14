@@ -81,8 +81,8 @@ const localStorageWithInvertMiddleware = (): Storage | undefined => {
 }
 
 const chains = [
-  ...(isLocalProvider ? ([localhostWithEns] as const) : ([] as const)),
   mainnetWithEns,
+  ...(isLocalProvider ? ([localhostWithEns] as const) : ([] as const)),
   sepoliaWithEns,
   holeskyWithEns,
 ] as const
