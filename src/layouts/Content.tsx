@@ -260,13 +260,15 @@ export const Content = ({
   const isDesktopMode = breakpoints.sm
 
   const warning = useContentWarning([children.warning])
-  const WarningComponent = !loading && warning && (
-    <WarningWrapper>
-      <Banner title={warning.title} alert={warning.type}>
-        {warning.message}
-      </Banner>
-    </WarningWrapper>
-  )
+  // const WarningComponent = !loading && warning && (
+  //   <WarningWrapper>
+  //     <Banner title={warning.title} alert={warning.type}>
+  //       {warning.message}
+  //     </Banner>
+  //   </WarningWrapper>
+  // )
+  // null the warnings for now
+  const WarningComponent = null
 
   const InfoComponent = !loading && children.info && (
     <WarningWrapper>{children.info}</WarningWrapper>
