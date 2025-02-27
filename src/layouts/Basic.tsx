@@ -113,9 +113,11 @@ export const Basic = withErrorBoundary(({ children }: { children: React.ReactNod
     <Container className="min-safe">
       <Navigation />
       <ContentWrapper>
-        <Button onClick={() => switchChain({ chainId: 1 })} disabled={isPending}>
-          Switch to Mainnet ({chainId})
-        </Button>
+        {isConnected && chainId !== 1 && (
+          <Button onClick={() => switchChain({ chainId: 1 })} disabled={isPending}>
+            Switch to Mainnet (Current chain:{chainId})
+          </Button>
+        )}
         {error ? <ErrorScreen errorType="application-error" /> : children}
       </ContentWrapper>
       <BottomPlaceholder />
