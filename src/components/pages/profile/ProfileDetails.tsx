@@ -183,7 +183,7 @@ const ActionWrapper = styled.div<{
 type Action = NonNullable<ReturnType<typeof useProfileActions>['profileActions']>[number]
 const getAction = (action: Action, is2LDEth: boolean) => {
   if (action.skip2LDEth && is2LDEth) return null
-  if (action.tooltipContent) {
+  /*if (action.tooltipContent) {
     return (
       <DisabledButtonWithTooltip
         buttonId={`disabled-profile-action-${action.label}`}
@@ -195,7 +195,7 @@ const getAction = (action: Action, is2LDEth: boolean) => {
         loading={action.loading}
       />
     )
-  }
+  }*/
   return (
     <Button
       data-testid={`profile-action-${action.label}`}
